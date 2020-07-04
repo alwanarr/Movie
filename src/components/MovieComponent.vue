@@ -3,10 +3,7 @@
     
     
     <div class="container">
-      <div v-if="isLoading == true">
-       <h1>loading</h1>
-      </div>
-      <template v-for="result in getMovies"   v-else>
+      <template v-for="result in getMovies"   >
         <div class="card" style="width: 18rem;" :key="result.id">
           <img v-bind:src="poster(result.poster_path)" width='100px' :alt="result.title">
           
@@ -17,26 +14,21 @@
           </div>
         </div>
         </template>
-
-       
     </div>
-
-     <footer v-if="getMovies.length" style="display: flex; justify-content: center;" >
+    <footer v-if="getMovies.length" style="display: flex; justify-content: center;" >
           <button @click="lastpage" style="margin-right: 10px;" :disabled="page == 1">last page</button>
           <button @click="nextpage">next page</button>
-     </footer>
+    </footer>
 
 
-    <div v-if="isOpen" >
-      <transition name="modal" >
-        <div v-if="isOpen">
-           
+    
+   <modal v-if="isOpen"
+          @close="closeModal">
+      <template v-slot:header>
+      </template>
 
-          <div class="overlay" @click.self="isOpen = false;" style="overflow-y: auto;">
-            <div class="modal">
-              <!-- <div  @click="isOpen = false" style="display:flex; justify-content: flex-end; cursor: pointer;">X</div> -->
-              <div class="content">
-                <img v-bind:src="poster(getDetailMovie.poster_path)"  :alt="getDetailMovie.title">
+      <template v-slot:body>
+       <img v-bind:src="poster(getDetailMovie.poster_path)"  :alt="getDetailMovie.title">
                 <h1>{{ getDetailMovie.title }}</h1>
                 <p style="background-color: greenyellow; display: inline-block; padding: 10px 5px;">{{ getDetailMovie.release_date | dateFormat}}</p>
 
@@ -48,18 +40,8 @@
                 </div>
                 
                 <p>{{ getDetailMovie.overview }}</p>
-                <footer style="display: flex; justify-content: flex-end;">
-                  <button @click="closeModal" style="background-color: red;">Close</button>
-                </footer>
-              </div>
-              
-            </div>
-          </div>
-        </div>
-      </transition>
-    
-  </div>
-   
+      </template>
+   </modal>
   </div>
 </template>
 
@@ -68,8 +50,11 @@ import dayjs from 'dayjs';
 import kekeyi from '../assets/kekeyi.png';
 import { mapGetters } from 'vuex';
 import { mapFields } from "vuex-map-fields";
-
+import modal from './ModalComponent';
 export default {
+  components: {
+    modal,
+  },
   computed: {
     ...mapGetters([
       'getMovies' ,
@@ -78,7 +63,7 @@ export default {
     ...mapFields({
           search: "search", 
           page: "page_number",
-          isLoading: "isLoading", 
+          
         })
   },
   data () {
@@ -101,7 +86,7 @@ export default {
     },
     poster(image){
       if(image){
-        return 'http://image.tmdb.org/t/p/w500/' +   image;
+        return 'http://image.tmdb.org/t/p/original/' +   image;
       }else{
         return this.image;
       }

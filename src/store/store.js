@@ -14,7 +14,7 @@ const BASE_URL = 'https://api.themoviedb.org/3/';
 
 export const store = new Vuex.Store({
     state: {
-        isLoading: false,
+        
         page_number: 1,
         search: "",
     
@@ -68,9 +68,9 @@ export const store = new Vuex.Store({
     actions: {
         async searchMovie(context, query){  
             let page = context.state.page_number;
-            let isLoading = context.state.isLoading;
+           
             if(query ) {
-              context.commit('SET_LOADING', true);
+              
               const response = await axios.get(`${BASE_URL}search/movie?api_key=${API_KEY}&query=${query}&page=${page}`);
               
               if(response.status) {
